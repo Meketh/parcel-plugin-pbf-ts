@@ -8,7 +8,7 @@ Inspired by [parcel-plugin-pbf](https://github.com/jabher/parcel-plugin-pbf) wit
 - Generates types for your `.proto` on bundle
 - Imports `.protos` as a string and compile them in runtime
 - Adds extra functionality to the proto `factories`
-- Lets you extend your `messages` to add custom `methods` or `constructor`
+- Lets you extend your `messages` to add custom `methods` or `constructor` (init)
 
 ## How to install
 
@@ -48,7 +48,7 @@ import Some from "./Some.proto";
 import Other from "./Other.proto";
 
 const root = makeRoot(Some, Other);
-root.Some.constructor = (o) => (o.magicNumber = 42);
+root.Some.init = (o) => (o.magicNumber = 42);
 extend(root.Some, {
   print() {
     console.log({ text: this.text });

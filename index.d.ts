@@ -16,7 +16,7 @@ declare namespace Proto {
   type Message = {encode(): Uint8Array}
   type Factory<Obj, Msg> = ((obj?: Obj | Uint8Array) => Msg) & {
     new(obj?: Obj | Uint8Array): Msg
-    constructor(this: Msg, obj: Msg)
+    init(this: Msg, obj: Msg)
     read(pbf: Pbf, end?: number): Msg
     write(obj: Obj, pbf: Pbf): void
     decode(buf: Uint8Array): Msg

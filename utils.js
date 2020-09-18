@@ -10,7 +10,7 @@ function makeProto(proto) {
       const msg = Object.assign(function(o = {}) {
         if (o instanceof Uint8Array) return msg.decode(o)
         Object.setPrototypeOf(o, msg.prototype)
-        const c = msg.constructor
+        const c = msg.init
         if (c) c.call(o, o)
         return o
       }, makeProto(prop), {
