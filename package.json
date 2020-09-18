@@ -1,14 +1,14 @@
 {
   "name": "parcel-plugin-pbf-ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "description": "Protocol Buffers support in Parcel via Pbf with Typescript",
   "author": {
-    "name": "Meketh",
-    "url": "https://github.com/Meketh"
+    "name": "Nahuel Santoalla",
+    "url": "https://github.com/meketh"
   },
   "repository": {
-    "url": "https://github.com/Meketh/parcel-plugin-pbf-ts"
+    "url": "https://github.com/meketh/parcel-plugin-pbf-ts"
   },
   "keywords": [
     "typescript",
@@ -20,8 +20,8 @@
     "decode",
     "serialization"
   ],
-  "main": "main.js",
-  "types": "./@types",
+  "main": "./inxed.js",
+  "typings": "./inxed.d.ts",
   "dependencies": {
     "pbf": "^3.2.1",
     "protocol-buffers-schema": "^3.4.0"
@@ -32,8 +32,6 @@
     "parcel": "^1.12.4"
   },
   "peerDependencies": {
-    "pbf": "^3.2.1",
-    "protocol-buffers-schema": "^3.4.0",
     "@types/pbf": "^3.0.2",
     "@types/protocol-buffers-schema": "^3.4.0",
     "parcel": "^1.12.4"

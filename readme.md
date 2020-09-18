@@ -41,7 +41,8 @@ project/
 #### project/protos/index.ts
 
 ```ts
-/// <reference path='./index.d.ts' />
+/// <reference types='parcel-plugin-pbf-ts' />
+/// <reference types='./' />
 import { makeRoot, extend } from "parcel-plugin-pbf-ts/utils";
 import Some from "./Some.proto";
 import Other from "./Other.proto";

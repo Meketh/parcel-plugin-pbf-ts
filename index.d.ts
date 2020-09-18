@@ -1,9 +1,10 @@
+/// <reference types='./root' />
 declare module '*.proto' {
   const content: string
   export default content
 }
 declare module 'pbf/compile' {
-  type Schema = import('protocol-buffers-schema/types').Schema
+  type Schema = import('@types/protocol-buffers-schema/types').Schema
   const compile: {raw: (schema: Schema) => string} & ((schema: Schema) => Proto.Root)
   export default compile
 }
