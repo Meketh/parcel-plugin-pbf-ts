@@ -18,7 +18,7 @@ const dts = module.exports = {
       message.path = `${path}.`
       const props = dts.declareProps(indent, message)
       const propsType = props && ` & {${props}}`
-      return `${indent}${message.name}: Proto.Factory<${path}Object, ${path}>${propsType}\n`
+      return `${indent}${message.name}: Proto.Factory<${path}Object, ${path}Oneofs, ${path}>${propsType}\n`
     })
     return `\n${enums}${messages}${indent}`
   },
@@ -38,11 +38,11 @@ const dts = module.exports = {
     dts.setTypesAndOneofs(message)
     const oneofs = dts.declareList(indent, message.oneofs, dts.declareOneof, '\n')
     const fields = dts.declareList(indent, message.fields, dts.declareField, '\n')
-    const oneofsName = oneofs && `, ${name}Oneofs`
-    const oneofsInterface = oneofs && `interface ${name}Oneofs {\n${oneofs}\n${indent}}\n${indent}`
+    const oneofsBody = oneofs && `\n${oneofs}\n${indent}`
     return `${
-    indent}interface ${name} extends Proto.Message${oneofsName}, ${name}Object {}\n${
-    indent}${oneofsInterface}interface ${name}Object {\n${fields}\n${
+    indent}interface ${name} extends Proto.Message<${name}Object, ${name}Oneofs> {}\n${
+    indent}interface ${name}Oneofs {${oneofsBody}}\n${
+    indent}interface ${name}Object {\n${fields}\n${
     indent}}\n${dts.declareNamespace(indent, message)}`
   },
   setTypesAndOneofs(message) {

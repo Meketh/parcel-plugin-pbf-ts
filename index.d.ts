@@ -10,16 +10,30 @@ declare module 'pbf/compile' {
 }
 declare module 'parcel-plugin-pbf-ts/utils' {
   export function makeRoot(...protos: string[]): Proto.Root
-  export function extend<O, M extends Proto.Message>(f: Proto.Factory<O, M>, ...e: ThisType<M>[]): Proto.Factory<O, M>
 }
 declare namespace Proto {
-  type Message = {encode(): Uint8Array}
-  type Factory<Obj, Msg> = ((obj?: Obj | Uint8Array) => Msg) & {
-    new(obj?: Obj | Uint8Array): Msg
+  type Oneof<Obj> = Record<string, keyof Obj>
+  type Message<Obj, Oof extends Oneof<Obj>> = Obj & Oof & {
+    encode(): Uint8Array
+    whichOneof:<
+      K extends keyof Oof,
+      N extends Oof[K] = Oof[K],
+      V extends Obj[N] = Obj[N]
+    >(oneof: K) => NonNullable<V>
+  }
+  type Init<Obj, Oof extends Oneof<Obj> = {}>
+    = Omit<Obj, Oof[keyof Oof]>
+    & OnlyOneOf<Obj, Oof[keyof Oof]>
+  type Factory<
+    Obj, Oof extends Oneof<Obj>,
+    Msg extends Message<Obj, Oof>
+  > = ((obj: Init<Obj, Oof> | Uint8Array) => Msg) & {
+    new(obj: Init<Obj, Oof> | Uint8Array): Msg
     init(this: Msg, obj: Msg)
     read(pbf: Pbf, end?: number): Msg
-    write(obj: Obj, pbf: Pbf): void
+    write(obj: Init<Obj, Oof>, pbf: Pbf): void
     decode(buf: Uint8Array): Msg
-    encode(obj: Obj): Uint8Array
+    encode(obj: Init<Obj, Oof>): Uint8Array
+    extend(...exs: ThisType<Msg>[]): void
   }
 }

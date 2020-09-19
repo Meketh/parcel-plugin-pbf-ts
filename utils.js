@@ -7,29 +7,31 @@ function makeProto(proto) {
   for (const [name, prop] of Object.entries(proto)) {
     if (prop._readField) {
       // Message Prop
-      const msg = Object.assign(function(o = {}) {
-        if (o instanceof Uint8Array) return msg.decode(o)
-        Object.setPrototypeOf(o, msg.prototype)
-        const c = msg.init
+      const factory = Object.assign(function(o = {}) {
+        if (o instanceof Uint8Array) return factory.decode(o)
+        Object.setPrototypeOf(o, factory.prototype)
+        const c = factory.init
         if (c) c.call(o, o)
         return o
       }, makeProto(prop), {
-        read: (pbf, end) => msg(prop.read(pbf, end)),
-        decode: bin => msg(prop.read(new Pbf(bin))),
+        read: (pbf, end) => factory(prop.read(pbf, end)),
+        decode: bin => factory(prop.read(new Pbf(bin))),
         encode: obj => {
           prop.write(obj, pbf)
           const bin = pbf.buf.subarray(0, pbf.pos)
           pbf.pos = 0
           return bin
         },
+        extend: (...e) => Object.assign(factory.prototype, ...e),
         prototype: {
-          encode() { return msg.encode(this) }
+          encode() { return factory.encode(this) },
+          whichOneof(oneof) { return this[oneof] },
         }
       })
-      Object.defineProperty(msg, 'name', {
+      Object.defineProperty(factory, 'name', {
         value: name, writable: false
       })
-      proto[name] = msg
+      proto[name] = factory
     } else if (typeof prop !== 'function') {
       // Enum Prop
       const strToInt = Object.entries(prop).map(([k, {value}]) => [k, value])
@@ -43,5 +45,4 @@ function makeProto(proto) {
 const compileProto = p => compile(parse(`syntax="proto3";${p}`))
 module.exports = {
   makeRoot: (...protos) => makeProto(Object.assign({}, ...protos.map(compileProto))),
-  extend: (f, ...e) => Object.assign(f.prototype, ...e),
 }
